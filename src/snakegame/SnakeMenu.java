@@ -11,6 +11,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -22,6 +23,8 @@ import javax.swing.JOptionPane;
  */
 public class SnakeMenu {
 
+    ArrayList<String> hsm = new ArrayList<String>();
+    
     /**
      * @param args the command line arguments
      */
@@ -56,8 +59,7 @@ public class SnakeMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                /*game.highscores.HighscoreManager hm = new game.highscores.HighscoreManager();
-                 JOptionPane.showMessageDialog(highscore, hm.getHighscoreString(), "Highscores", JOptionPane.WARNING_MESSAGE);*/
+                JOptionPane.showMessageDialog(highscoreB, hsm, "Highscores", JOptionPane.WARNING_MESSAGE);
             }
         });
         mainWindow.add(highscoreB);
@@ -113,10 +115,9 @@ public class SnakeMenu {
                     JDialog dialog = k.createDialog(null, "Score");
 
                     name = k.showInputDialog(null, "Your name", "Score", 1);
-                    //HighscoreManager hm = new HighscoreManager();
                     if (name != null) {
                         name = name + " ";
-                        //hm.addScore(name, sn.getPoints()); 
+                        hsm.add(name + sn.getPoints());
                     }
                     event.getWindow().dispose();
 
