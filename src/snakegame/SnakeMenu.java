@@ -5,6 +5,8 @@
  */
 package snakegame;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author Eiskalt
@@ -15,5 +17,16 @@ public class SnakeMenu {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        new SnakeMenu().startGraphicInterface();
     }
+
+    private void startGraphicInterface() {
+        JFrame mainWindow = new JFrame("Snake menu");
+        mainWindow.setLayout(null);
+        mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainWindow.setSize(270, 240);
+        mainWindow.setVisible(true);
+    }
+    
+    
 }
