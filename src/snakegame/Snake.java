@@ -64,7 +64,11 @@ public class Snake {
             g2.drawArc(p.x, p.y, bodySize, bodySize, 0, 360);
         }
         Point p = body.get(body.size() - 1);
-        g2.setColor(Color.black);
+        g2.setColor(new Color(22, 150, 22)); // Head color
+        g2.fillArc(p.x, p.y, bodySize, bodySize, 0, 360);
+        g2.setColor(Color.magenta); // Stroke(обводка) color
+        g2.drawArc(p.x, p.y, bodySize, bodySize, 0, 360);
+        g2.setColor(Color.black); //Обводка головы
         g2.fillArc(p.x + bodySize / 2 - 2, p.y + bodySize / 2 - 2, 4, 4, 0, 360);
         g2.setColor(Color.white); // Head point color
         g2.fillArc(p.x + bodySize / 2 - 1, p.y + bodySize / 2 - 1, 2, 2, 0, 360);

@@ -40,6 +40,7 @@ public class SnakeMenu {
 
     private void startGraphicInterface() {
         JFrame mainWindow = new JFrame("Snake menu");
+        mainWindow.setLocationRelativeTo(null);
         mainWindow.setLayout(null);
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainWindow.setSize(270, 240);

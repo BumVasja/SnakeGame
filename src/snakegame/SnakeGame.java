@@ -41,6 +41,7 @@ public class SnakeGame extends JPanel{
     private int lastPressedKey = 0;
     private final Random rand = new Random();
     private String message = null;
+    boolean next = false;
 
     public SnakeGame() {
         super(true);
@@ -51,11 +52,17 @@ public class SnakeGame extends JPanel{
         setMinimumSize(d);
         setMaximumSize(d);
         setSize(d);
+        
         Thread th = new Thread(new Runnable() {
 
             public void run() {
                 while (true) {
                     gameCycle();
+                    if (points >= 300 & next == false) 
+                    {
+                        getLevel("C:/sn2.txt");
+                        next = true;
+                    }
                     try {
                         Thread.sleep(500 - snake.getSpeed());
                     } catch (InterruptedException e) {
