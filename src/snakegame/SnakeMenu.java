@@ -11,6 +11,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -24,7 +29,7 @@ import javax.swing.JOptionPane;
 public class SnakeMenu {
 
     ArrayList<String> hsm = new ArrayList<String>();
-    
+
     /**
      * @param args the command line arguments
      */
@@ -59,6 +64,8 @@ public class SnakeMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                //Вывод рекордов по нажатию
+                //showRecords();
                 JOptionPane.showMessageDialog(highscoreB, hsm, "Highscores", JOptionPane.WARNING_MESSAGE);
             }
         });
@@ -104,7 +111,7 @@ public class SnakeMenu {
 
             public void windowClosing(WindowEvent event) {
                 Object[] options = {"Yes", "No!"};
-                int n = JOptionPane.showOptionDialog(event.getWindow(), "Save score?",//You can save the score
+                int n = JOptionPane.showOptionDialog(event.getWindow(), "Save score?",
                         "Snake", JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE, null, options,
                         options[0]);
@@ -118,6 +125,8 @@ public class SnakeMenu {
                     if (name != null) {
                         name = name + " ";
                         hsm.add(name + sn.getPoints());
+                        // запись в файл
+                        //writeHighScore(name, sn.getPoints());
                     }
                     event.getWindow().dispose();
 
@@ -138,5 +147,74 @@ public class SnakeMenu {
             public void windowOpened(WindowEvent event) {
             }
         });
+    }
+
+    public void writeHighScore(String name, int points) {
+        File file = new File("C:/highscores.txt");
+
+        try {
+            //проверяем, что если файл не существует то создаем его
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            //PrintWriter обеспечит возможности записи в файл
+            PrintWriter out = new PrintWriter(file.getAbsoluteFile());
+
+            try {
+                //Записываем текст в файл
+                out.print(name + points);
+            } finally {
+                //После чего мы должны закрыть файл
+                //Иначе файл не запишется
+                out.close();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void showRecords() {
+
+        BufferedReader input = null;
+
+        try {
+            File file = new File("C:/highscores.txt");
+            input = new BufferedReader(new FileReader(file));
+            String line = null;
+            String[][] a = new String[10][2];
+            //Производим запись в массив
+            for (int y = 0; (line = input.readLine()) != null; y++) {
+                a[y] = line.split(" ");
+                /*System.out.println(a[y][0]);
+                 System.out.println(a[y][1]);*/
+            }
+            //Сортируем его(а вообще при записи надо сортировать)
+            for (int i = 0; i < a.length - 1; i++) {
+                for (int j = 0; j < a.length - i - 1; j++) {
+                    System.out.println(a[j][1]);
+                    if (Integer.parseInt(a[j][1]) > Integer.parseInt(a[j + 1][1])) {
+                        String[] temp = new String[2];
+                        temp = a[j];
+                        a[j] = a[j + 1];
+                        a[j + 1] = a[j];
+                    }
+                }
+            }
+            for (int i = 0; i < 10; i++) {
+                System.out.println(a[i][0]);
+                System.out.println(a[i][1]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (input != null) {
+                    input.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }
