@@ -79,7 +79,7 @@ public class Snake {
      *
      * @return New snake position
      */
-    public Point move() {
+    public Point move() { //Баг: Змейка жрет сама себя, а может фича?:D
         Point last = body.get(body.size() - 1);
         Point pp = last;
         switch (direction) {

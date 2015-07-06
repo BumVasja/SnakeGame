@@ -6,9 +6,11 @@
 package snakegame;
 
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
@@ -21,15 +23,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Random;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 /**
  *
  * @author Eiskalt
  */
-public class SnakeGame extends JPanel{
+public class SnakeGame extends JPanel {
 
-    private static final int wallStep = 10;
+    private static final int wallStep = 20;//Размер одной клетки в пикселях
     private Shape walls1 = new Polygon();
     private Shape walls2 = new Polygon();
     private Shape walls3 = new Polygon();
@@ -41,28 +44,25 @@ public class SnakeGame extends JPanel{
     private int lastPressedKey = 0;
     private final Random rand = new Random();
     private String message = null;
-    boolean next = false;
+    private int level = 1;
 
     public SnakeGame() {
         super(true);
-        Dimension d = getLevel("C:/sn1.txt");
+        Dimension d = getLevel("levels/sn"+level+".txt");
         putOrange();
         putCherry();
         setPreferredSize(d);
         setMinimumSize(d);
         setMaximumSize(d);
         setSize(d);
-        
+
         Thread th = new Thread(new Runnable() {
 
             public void run() {
                 while (true) {
                     gameCycle();
-                    if (points >= 300 & next == false) 
-                    {
-                        getLevel("C:/sn2.txt");
-                        next = true;
-                    }
+                    //Переход на следующий уровень
+                    nextLevel();
                     try {
                         Thread.sleep(500 - snake.getSpeed());
                     } catch (InterruptedException e) {
@@ -147,7 +147,7 @@ public class SnakeGame extends JPanel{
         }
         Point p = snake.move();
         if (p.x == orange.x && p.y == orange.y) {
-            points += 100;
+            points += 50;
             snake.expand();
             putOrange();
         }
@@ -167,6 +167,15 @@ public class SnakeGame extends JPanel{
         this.repaint();
     }
 
+    public void nextLevel() {
+        if (points >= 300*level & level < 5) {
+            getLevel("levels/sn"+(++level)+".txt");//! Баг: Блоки закрывают вкусняшки
+            putOrange();
+            putCherry();
+            snake.setDirection(Snake.DIR_POUSE);
+        }
+    }
+
     private void setMessage(String msg) {
         message = msg;
     }
@@ -175,27 +184,37 @@ public class SnakeGame extends JPanel{
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        ImageIcon brickIcon = new ImageIcon("brick.png");
+        brickIcon.paintIcon(this, g2, orange.x, orange.y);
         g2.setColor(Color.white);
         g2.fillRect(0, 0, getWidth(), getHeight());
         g2.setColor(Color.gray);
         g2.fill(walls3);
         g2.setColor(Color.lightGray);
         g2.fill(walls1);
-        g2.setColor(Color.white);
+        g2.setColor(Color.white);//Цвет закраски
         g2.fill(walls2);
-        g2.setColor(Color.orange);
+        //paint orange
+        ImageIcon orangeIcon = new ImageIcon("orange.png");
+        orangeIcon.paintIcon(this, g2, orange.x, orange.y);
+        //g2.drawImage(fruits.getImage(), orange.x, orange.y, Color.white, this);
+        /*g2.setColor(Color.orange);
         g2.fillArc(orange.x, orange.y, wallStep, wallStep, 0, 360);
         g2.setColor(Color.black);
-        g2.drawArc(orange.x, orange.y, wallStep, wallStep, 0, 360);
-        g2.setColor(Color.red);
+        g2.drawArc(orange.x, orange.y, wallStep, wallStep, 0, 360);*/
+        //paint cherry
+        ImageIcon cherryIcon = new ImageIcon("cherry.png");
+        cherryIcon.paintIcon(this, g2, cherry.x, cherry.y);
+        /*g2.setColor(Color.red);
         g2.fillArc(cherry.x, cherry.y, wallStep, wallStep, 0, 360);
         g2.setColor(Color.black);
-        g2.drawArc(cherry.x, cherry.y, wallStep, wallStep, 0, 360);
+        g2.drawArc(cherry.x, cherry.y, wallStep, wallStep, 0, 360);*/
         snake.paint(g2);
         g2.setColor(Color.black);
         g2.drawString("Points: " + points, 2, 10);
+        g2.drawString("Level: " + level, 320, 10);
         if (message != null) {
-            g2.setColor(Color.yellow);
+            g2.setColor(Color.red);
             g2.fillRect(150, 100, 100, 30);
             g2.setColor(Color.black);
             g2.drawRect(150, 100, 100, 30);
