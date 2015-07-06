@@ -45,10 +45,11 @@ public class SnakeGame extends JPanel {
     private final Random rand = new Random();
     private String message = null;
     private int level = 1;
+    private boolean moved = false;
 
     public SnakeGame() {
         super(true);
-        Dimension d = getLevel("levels/sn"+level+".txt");
+        Dimension d = getLevel("levels/sn" + level + ".txt");
         putOrange();
         putCherry();
         setPreferredSize(d);
@@ -61,6 +62,7 @@ public class SnakeGame extends JPanel {
             public void run() {
                 while (true) {
                     gameCycle();
+                    moved = true;
                     //Переход на следующий уровень
                     nextLevel();
                     try {
@@ -146,16 +148,37 @@ public class SnakeGame extends JPanel {
             setMessage(null);
         }
         Point p = snake.move();
+        //Проверка столкновения с самим собой(с головным элементом, только если элементов больше 4)
+        if (snake.getBodyPoints() > 4 && GameOver != true) {
+            for (int i = 1; i < snake.getBodyPoints(); i++) {
+                if (snake.getBody(0).x == snake.getBody(i).x && snake.getBody(0).y == snake.getBody(i).y) {
+                    points -= 50;
+                    GameOver = true;
+                    snake.setDirection(Snake.DIR_POUSE);
+                    setMessage("Game over!");
+                    break;
+                }
+            }
+        }
+
         if (p.x == orange.x && p.y == orange.y) {
             points += 50;
             snake.expand();
             putOrange();
         }
+        //Проверка столкновения с апельсинкой
+        if (p.x == orange.x && p.y == orange.y) {
+            points += 50;
+            snake.expand();
+            putOrange();
+        }
+        //Проверка столкновения с вишенкой
         if (p.x == cherry.x && p.y == cherry.y) {
             points += 100;
             snake.expand();
             putCherry();
         }
+        //Проверка столкновения со стеной
         if (walls2.contains(p)) {
             if (snake.getDirection() != Snake.DIR_POUSE) {
                 points -= 50;
@@ -168,8 +191,8 @@ public class SnakeGame extends JPanel {
     }
 
     public void nextLevel() {
-        if (points >= 300*level & level < 5) {
-            getLevel("levels/sn"+(++level)+".txt");//! Баг: Блоки закрывают вкусняшки
+        if (points >= 300 * level & level < 5) {
+            getLevel("levels/sn" + (++level) + ".txt");//! Баг: Блоки закрывают вкусняшки
             putOrange();
             putCherry();
             snake.setDirection(Snake.DIR_POUSE);
@@ -199,16 +222,16 @@ public class SnakeGame extends JPanel {
         orangeIcon.paintIcon(this, g2, orange.x, orange.y);
         //g2.drawImage(fruits.getImage(), orange.x, orange.y, Color.white, this);
         /*g2.setColor(Color.orange);
-        g2.fillArc(orange.x, orange.y, wallStep, wallStep, 0, 360);
-        g2.setColor(Color.black);
-        g2.drawArc(orange.x, orange.y, wallStep, wallStep, 0, 360);*/
+         g2.fillArc(orange.x, orange.y, wallStep, wallStep, 0, 360);
+         g2.setColor(Color.black);
+         g2.drawArc(orange.x, orange.y, wallStep, wallStep, 0, 360);*/
         //paint cherry
         ImageIcon cherryIcon = new ImageIcon("cherry.png");
         cherryIcon.paintIcon(this, g2, cherry.x, cherry.y);
         /*g2.setColor(Color.red);
-        g2.fillArc(cherry.x, cherry.y, wallStep, wallStep, 0, 360);
-        g2.setColor(Color.black);
-        g2.drawArc(cherry.x, cherry.y, wallStep, wallStep, 0, 360);*/
+         g2.fillArc(cherry.x, cherry.y, wallStep, wallStep, 0, 360);
+         g2.setColor(Color.black);
+         g2.drawArc(cherry.x, cherry.y, wallStep, wallStep, 0, 360);*/
         snake.paint(g2);
         g2.setColor(Color.black);
         g2.drawString("Points: " + points, 2, 10);
@@ -222,31 +245,37 @@ public class SnakeGame extends JPanel {
         }
     }
 
+    //Баг: Самокушенье, запретить двигаться в сторону своих элементов
+
     public void processKey(KeyEvent ev) {
         Snake snake = getSnake();
         switch (ev.getKeyCode()) {
             case KeyEvent.VK_RIGHT:
-                if (lastPressedKey != KeyEvent.VK_LEFT && !GameOver) {
+                if (lastPressedKey != KeyEvent.VK_LEFT && !GameOver && moved == true) {
                     snake.setDirection(Snake.DIR_RIGHT);
                     lastPressedKey = KeyEvent.VK_RIGHT;
+                    moved = false;
                 }
                 break;
             case KeyEvent.VK_LEFT:
-                if (lastPressedKey != KeyEvent.VK_RIGHT && !GameOver) {
+                if (lastPressedKey != KeyEvent.VK_RIGHT && !GameOver && moved == true) {
                     snake.setDirection(Snake.DIR_LEFT);
                     lastPressedKey = KeyEvent.VK_LEFT;
+                    moved = false;
                 }
                 break;
             case KeyEvent.VK_DOWN:
-                if (lastPressedKey != KeyEvent.VK_UP && !GameOver) {
+                if (lastPressedKey != KeyEvent.VK_UP && !GameOver && moved == true) {
                     snake.setDirection(Snake.DIR_DOWN);
                     lastPressedKey = KeyEvent.VK_DOWN;
+                    moved = false;
                 }
                 break;
             case KeyEvent.VK_UP:
-                if (lastPressedKey != KeyEvent.VK_DOWN && !GameOver) {
+                if (lastPressedKey != KeyEvent.VK_DOWN && !GameOver && moved == true) {
                     snake.setDirection(Snake.DIR_UP);
                     lastPressedKey = KeyEvent.VK_UP;
+                    moved = false;
                 }
                 break;
             case KeyEvent.VK_ESCAPE:

@@ -22,7 +22,16 @@ public class Snake {
     public static final int DIR_DOWN = 3;
     public static final int DIR_LEFT = 4;
     private ArrayList<Point> body = new ArrayList<Point>();
+
+    public Point getBody(int i) {
+        return body.get(i);
+    }
+
     private int bodySize;
+
+    public int getBodyPoints() {
+        return body.size();
+    }
     private int direction = DIR_POUSE;
 
     public int getDirection() {
