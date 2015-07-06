@@ -22,6 +22,7 @@ public class Snake {
     public static final int DIR_DOWN = 3;
     public static final int DIR_LEFT = 4;
     private ArrayList<Point> body = new ArrayList<Point>();
+    private static int speed = 410;
 
     public Point getBody(int i) {
         return body.get(i);
@@ -129,7 +130,11 @@ public class Snake {
      * @see SnakeGame#SnakeGame
      */
     public int getSpeed() {
-        return 410;
+        return speed;
+    }
+    
+    public static void setSpeed(int speed) {
+        Snake.speed = speed;
     }
 
     /**
