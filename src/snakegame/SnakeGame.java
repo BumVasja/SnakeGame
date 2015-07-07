@@ -175,7 +175,7 @@ public class SnakeGame extends JPanel {
         }
         //Проверка столкновения с вишенкой
         if (p.x == cherry.x && p.y == cherry.y) {
-            points += 300;
+            points += 100;
             snake.expand();
             putCherry();
         }
