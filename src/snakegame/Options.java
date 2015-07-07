@@ -76,16 +76,13 @@ public class Options extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        if (jComboBox1.getSelectedIndex()== 0)
-        {
+        if (jComboBox1.getSelectedIndex() == 0) {
             Snake.setSpeed(350);
         }
-        if (jComboBox1.getSelectedIndex()== 1)
-        {
+        if (jComboBox1.getSelectedIndex() == 1) {
             Snake.setSpeed(410);
         }
-        if (jComboBox1.getSelectedIndex()== 2)
-        {
+        if (jComboBox1.getSelectedIndex() == 2) {
             Snake.setSpeed(450);
         }
     }//GEN-LAST:event_jButton1ActionPerformed

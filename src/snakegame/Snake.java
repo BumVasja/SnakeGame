@@ -5,10 +5,11 @@
  */
 package snakegame;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -66,22 +67,25 @@ public class Snake {
      *
      * @param g2 Graphics2D
      */
-    public void paint(Graphics2D g2) {
+    public void paint(Graphics2D g2, int lastPressedKey) {
         for (Point p : body) {
-            g2.setColor(Color.green); // Body color
-            g2.fillArc(p.x, p.y, bodySize, bodySize, 0, 360);
-            g2.setColor(Color.magenta); // Stroke(обводка) color
-            g2.drawArc(p.x, p.y, bodySize, bodySize, 0, 360);
+            //paint body
+            ImageIcon bodyIcon = new ImageIcon("body.png");
+            bodyIcon.paintIcon(null, g2, p.x, p.y);
         }
         Point p = body.get(body.size() - 1);
-        g2.setColor(new Color(22, 150, 22)); // Head color
-        g2.fillArc(p.x, p.y, bodySize, bodySize, 0, 360);
-        g2.setColor(Color.magenta); // Stroke(обводка) color
-        g2.drawArc(p.x, p.y, bodySize, bodySize, 0, 360);
-        g2.setColor(Color.black); //Обводка головы
-        g2.fillArc(p.x + bodySize / 2 - 2, p.y + bodySize / 2 - 2, 4, 4, 0, 360);
-        g2.setColor(Color.white); // Head point color
-        g2.fillArc(p.x + bodySize / 2 - 1, p.y + bodySize / 2 - 1, 2, 2, 0, 360);
+        //Выбор рисунка в зависимости от последней нажатой кнопки
+        ImageIcon headIcon = null;
+        if (lastPressedKey == KeyEvent.VK_RIGHT) {
+            headIcon = new ImageIcon("head_right.png");
+        } else if (lastPressedKey == KeyEvent.VK_LEFT) {
+            headIcon = new ImageIcon("head_left.png");
+        } else if (lastPressedKey == KeyEvent.VK_UP) {
+            headIcon = new ImageIcon("head_up.png");
+        } else {
+            headIcon = new ImageIcon("head_down.png");
+        }
+        headIcon.paintIcon(null, g2, p.x, p.y);
     }
 
     /**
@@ -132,7 +136,7 @@ public class Snake {
     public int getSpeed() {
         return speed;
     }
-    
+
     public static void setSpeed(int speed) {
         Snake.speed = speed;
     }
